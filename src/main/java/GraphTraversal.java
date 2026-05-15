@@ -31,18 +31,46 @@ public class GraphTraversal {
     }
 
     public static List<User> dfs(Graph graph, User start) {
-        return null;
+        Set<User> visited = new HashSet<>();
+        List<User> result = new ArrayList<>();
+
+        dfs(graph, visited, start, result);
+
+        return result;
+    }
+
+    private static void dfs(
+        Graph graph,
+        Set<User> visited,
+        User start,
+        List<User> result
+    ) {
+        visited.add(start);
+        result.add(start);
+
+        for (User u : graph.getConnections(start)) {
+            if (!visited.contains(u)) {
+                dfs(graph, visited, u, result);
+            }
+        }
     }
 
     public static boolean isConnected(Graph graph, User a, User b) {
-        //
+        if (!graph.getUsers().contains(a) || !graph.getUsers().contains(b)) {
+            throw new IllegalArgumentException();
+        }
 
-        return false;
+        return bfs(graph, a).contains(b);
     }
 
     public static List<User> reachableFrom(Graph graph, User start) {
-        //
+        if (!graph.getUsers().contains(start)) {
+            throw new IllegalArgumentException();
+        }
 
-        return null;
+        List<User> connectedUsers = bfs(graph, start);
+        connectedUsers.remove(start);
+
+        return connectedUsers;
     }
 }
