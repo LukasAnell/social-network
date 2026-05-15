@@ -64,6 +64,10 @@ public class GraphTraversal {
     }
 
     public static boolean isConnected(Graph graph, User a, User b) {
+        if (!graph.hasUser(b)) {
+            throw new IllegalArgumentException();
+        }
+
         return bfs(graph, a).contains(b);
     }
 

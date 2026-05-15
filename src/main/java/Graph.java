@@ -5,9 +5,11 @@ import java.util.List;
 public class Graph {
 
     private HashMap<User, List<User>> adjacencyList;
+    private HashMap<String, Integer> edgeWeights;
 
     public Graph() {
         adjacencyList = new HashMap<>();
+        edgeWeights = new HashMap<>();
     }
 
     public void addUser(User user) {
@@ -38,6 +40,10 @@ public class Graph {
     }
 
     public void addConnection(User a, User b) {
+        addConnection(a, b, 1);
+    }
+
+    public void addConnection(User a, User b, int weight) {
         boolean eitherUserDoesntExist = (!adjacencyList.containsKey(a) ||
             !adjacencyList.containsKey(b));
         if (eitherUserDoesntExist) {
@@ -54,6 +60,19 @@ public class Graph {
         // then, the other way around
         adjacencyList.get(a).add(b);
         adjacencyList.get(b).add(a);
+
+        // add corresponding weight
+        int aId = a.getId();
+        int bId = b.getId();
+
+        String key;
+        if (aId < bId) {
+            key = String.format("%d-%d", aId, bId);
+        } else {
+            key = String.format("%d-%d", bId, aId);
+        }
+
+        edgeWeights.put(key, weight);
     }
 
     public void removeConnection(User a, User b) {
@@ -71,6 +90,19 @@ public class Graph {
 
         adjacencyList.get(a).remove(b);
         adjacencyList.get(b).remove(a);
+
+        // remove weight entry as well
+        int aId = a.getId();
+        int bId = b.getId();
+
+        String key;
+        if (aId < bId) {
+            key = String.format("%d-%d", aId, bId);
+        } else {
+            key = String.format("%d-%d", bId, aId);
+        }
+
+        edgeWeights.remove(key);
     }
 
     public List<User> getConnections(User user) {
@@ -97,6 +129,24 @@ public class Graph {
 
     public List<User> getUsers() {
         return new ArrayList<>(adjacencyList.keySet());
+    }
+
+    public int getWeight(User a, User b) {
+        int aId = a.getId();
+        int bId = b.getId();
+
+        String key;
+        if (aId < bId) {
+            key = String.format("%d-%d", aId, bId);
+        } else {
+            key = String.format("%d-%d", bId, aId);
+        }
+
+        if (!edgeWeights.containsKey(key)) {
+            throw new IllegalArgumentException();
+        }
+
+        return edgeWeights.get(key);
     }
 
     public void printGraph() {
