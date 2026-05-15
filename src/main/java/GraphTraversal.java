@@ -8,6 +8,10 @@ import java.util.Set;
 public class GraphTraversal {
 
     public static List<User> bfs(Graph graph, User start) {
+        if (!graph.hasUser(start)) {
+            throw new IllegalArgumentException();
+        }
+
         Set<User> visited = new HashSet<>();
         List<User> result = new ArrayList<>();
 
@@ -31,6 +35,10 @@ public class GraphTraversal {
     }
 
     public static List<User> dfs(Graph graph, User start) {
+        if (!graph.hasUser(start)) {
+            throw new IllegalArgumentException();
+        }
+
         Set<User> visited = new HashSet<>();
         List<User> result = new ArrayList<>();
 
@@ -56,18 +64,10 @@ public class GraphTraversal {
     }
 
     public static boolean isConnected(Graph graph, User a, User b) {
-        if (!graph.getUsers().contains(a) || !graph.getUsers().contains(b)) {
-            throw new IllegalArgumentException();
-        }
-
         return bfs(graph, a).contains(b);
     }
 
     public static List<User> reachableFrom(Graph graph, User start) {
-        if (!graph.getUsers().contains(start)) {
-            throw new IllegalArgumentException();
-        }
-
         List<User> connectedUsers = bfs(graph, start);
         connectedUsers.remove(start);
 
