@@ -52,8 +52,8 @@ public class Graph {
 
         // add user b to user a's connection list
         // then, the other way around
-        adjacencyList.computeIfAbsent(a, k -> new ArrayList<>()).add(b);
-        adjacencyList.computeIfAbsent(b, k -> new ArrayList<>()).add(a);
+        adjacencyList.get(a).add(b);
+        adjacencyList.get(b).add(a);
     }
 
     public void removeConnection(User a, User b) {
@@ -69,8 +69,8 @@ public class Graph {
             throw new IllegalArgumentException();
         }
 
-        adjacencyList.computeIfAbsent(a, k -> new ArrayList<>()).remove(b);
-        adjacencyList.computeIfAbsent(b, k -> new ArrayList<>()).remove(a);
+        adjacencyList.get(a).remove(b);
+        adjacencyList.get(b).remove(a);
     }
 
     public List<User> getConnections(User user) {
@@ -111,9 +111,12 @@ public class Graph {
         for (User user : uniqueUsers) {
             List<User> connections = adjacencyList.get(user);
 
-            System.out.println(
-                String.format("%s -> %s", user.getName(), connections)
-            );
+            List<String> connectionsUsers = new ArrayList<>();
+            for (User u : connections) {
+                connectionsUsers.add(u.getName());
+            }
+
+            System.out.printf("%s -> %s\n", user.getName(), connectionsUsers);
         }
     }
 }
