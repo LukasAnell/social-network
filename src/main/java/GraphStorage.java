@@ -98,8 +98,6 @@ public class GraphStorage {
             while ((line = reader.readLine()) != null) {
                 String[] sep = line.strip().split(",");
 
-                System.out.println("Line: " + line);
-
                 List<User> matchedUsers = new ArrayList<>();
 
                 // loop through unique users and find the ones that have the same id as in sep
@@ -112,8 +110,6 @@ public class GraphStorage {
                         matchedUsers.add(u);
                     }
                 }
-
-                System.out.println("Matched users: " + matchedUsers);
 
                 // add connection
                 graph.addConnection(matchedUsers.get(0), matchedUsers.get(1));
