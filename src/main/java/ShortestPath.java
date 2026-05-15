@@ -6,16 +6,7 @@ import java.util.PriorityQueue;
 
 public class ShortestPath {
 
-    static class QueueObject {
-
-        int distance;
-        User user;
-
-        public QueueObject(int distance, User user) {
-            this.distance = distance;
-            this.user = user;
-        }
-    }
+    record QueueObject(int distance, User user) {}
 
     public static List<User> dijkstra(Graph graph, User start, User end) {
         if (!graph.hasUser(start) || !graph.hasUser(end)) {
