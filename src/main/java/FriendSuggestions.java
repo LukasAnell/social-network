@@ -1,3 +1,4 @@
+import com.sun.accessibility.internal.resources.accessibility_zh_CN;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,37 +16,26 @@ public class FriendSuggestions {
         // ARE connected to one of the users connected to each user adjancent to user
         // this makes no sense when typed out
 
-        List<User> graphUsers = graph.getUsers();
-        graphUsers.remove(user);
-
         List<User> userFirstDegree = graph.getConnections(user);
+        List<User> candidates = new ArrayList<>();
 
-        // all users not connected to user
-        List<User> notConnectedToUser = new ArrayList<>(graphUsers);
-        notConnectedToUser.removeAll(userFirstDegree);
+        for (User candidate : graph.getUsers()) {
+            if (candidate.equals(user) || userFirstDegree.contains(candidate)) {
+                continue;
+            }
 
-        // check which users in userFirstDegree have a connection that's contained in notConnectedToUser
-        List<User> userSecondDegree = new ArrayList<>();
-        for (User u : userFirstDegree) {
-            for (User v : notConnectedToUser) {
-                if (graph.getConnections(u).contains(v)) {
-                    userSecondDegree.add(v);
-                }
+            if (mutualFriendCount(graph, user, candidate) > 0) {
+                candidates.add(candidate);
             }
         }
 
-        System.out.println("Before sorting: " + userSecondDegree);
+        candidates.sort(
+            (a, b) ->
+                mutualFriendCount(graph, user, b) -
+                mutualFriendCount(graph, user, a)
+        );
 
-        userSecondDegree.sort((u1, u2) -> {
-            int c1 = mutualFriendCount(graph, user, u1);
-            int c2 = mutualFriendCount(graph, user, u2);
-
-            return Integer.compare(c1, c2);
-        });
-
-        System.out.println("After sorting: " + userSecondDegree);
-
-        return userSecondDegree.reversed();
+        return candidates;
     }
 
     public static int mutualFriendCount(Graph graph, User a, User b) {
