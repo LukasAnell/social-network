@@ -62,15 +62,7 @@ public class Graph {
         adjacencyList.get(b).add(a);
 
         // add corresponding weight
-        int aId = a.getId();
-        int bId = b.getId();
-
-        String key;
-        if (aId < bId) {
-            key = String.format("%d-%d", aId, bId);
-        } else {
-            key = String.format("%d-%d", bId, aId);
-        }
+        String key = edgeKey(a, b);
 
         edgeWeights.put(key, weight);
     }
@@ -92,15 +84,7 @@ public class Graph {
         adjacencyList.get(b).remove(a);
 
         // remove weight entry as well
-        int aId = a.getId();
-        int bId = b.getId();
-
-        String key;
-        if (aId < bId) {
-            key = String.format("%d-%d", aId, bId);
-        } else {
-            key = String.format("%d-%d", bId, aId);
-        }
+        String key = edgeKey(a, b);
 
         edgeWeights.remove(key);
     }
@@ -132,21 +116,17 @@ public class Graph {
     }
 
     public int getWeight(User a, User b) {
-        int aId = a.getId();
-        int bId = b.getId();
-
-        String key;
-        if (aId < bId) {
-            key = String.format("%d-%d", aId, bId);
-        } else {
-            key = String.format("%d-%d", bId, aId);
-        }
-
-        if (!edgeWeights.containsKey(key)) {
-            throw new IllegalArgumentException();
-        }
+        String key = edgeKey(a, b);
 
         return edgeWeights.get(key);
+    }
+
+    private String edgeKey(User a, User b) {
+        int aId = a.getId();
+        int bId = b.getId();
+        return aId < bId
+            ? String.format("%d-%d", aId, bId)
+            : String.format("%d-%d", bId, aId);
     }
 
     public void printGraph() {

@@ -89,6 +89,11 @@ public class ShortestPath {
         for (int i = 0; i < path.size() - 1; i++) {
             User u1 = path.get(i);
             User u2 = path.get(i + 1);
+
+            if (!graph.hasConnection(u1, u2)) {
+                throw new IllegalArgumentException();
+            }
+
             weight += graph.getWeight(u1, u2);
         }
 
