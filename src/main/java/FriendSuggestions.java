@@ -34,7 +34,18 @@ public class FriendSuggestions {
             }
         }
 
-        return userSecondDegree;
+        System.out.println("Before sorting: " + userSecondDegree);
+
+        userSecondDegree.sort((u1, u2) -> {
+            int c1 = mutualFriendCount(graph, user, u1);
+            int c2 = mutualFriendCount(graph, user, u2);
+
+            return Integer.compare(c1, c2);
+        });
+
+        System.out.println("After sorting: " + userSecondDegree);
+
+        return userSecondDegree.reversed();
     }
 
     public static int mutualFriendCount(Graph graph, User a, User b) {
