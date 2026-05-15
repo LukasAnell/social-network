@@ -1,4 +1,3 @@
-import com.sun.accessibility.internal.resources.accessibility_zh_CN;
 import java.util.ArrayList;
 import java.util.List;
 
