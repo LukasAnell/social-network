@@ -11,14 +11,45 @@ public class Graph {
     }
 
     public void addUser(User user) {
+        if (adjacencyList.containsKey(user)) {
+            throw new IllegalArgumentException();
+        }
+
         adjacencyList.computeIfAbsent(user, k -> new ArrayList<>());
     }
 
     public void removeUser(User user) {
+        if (!adjacencyList.containsKey(user)) {
+            throw new IllegalArgumentException();
+        }
+
+        // remove all instances of user in any connection lists
+        List<User> uniqueUsers = this.getUsers();
+
+        for (User key : uniqueUsers) {
+            adjacencyList.computeIfPresent(key, (k, l) -> {
+                l.removeIf(obj -> obj.equals(user));
+                return l;
+            });
+        }
+
+        // remove user from keys
         adjacencyList.remove(user);
     }
 
     public void addConnection(User a, User b) {
+        boolean eitherUserDoesntExist = (!adjacencyList.containsKey(a) ||
+            !adjacencyList.containsKey(b));
+        if (eitherUserDoesntExist) {
+            throw new IllegalArgumentException();
+        }
+
+        boolean connectionExists = (adjacencyList.get(a).contains(b) ||
+            adjacencyList.get(b).contains(a));
+        if (connectionExists) {
+            throw new IllegalArgumentException();
+        }
+
         // add user b to user a's connection list
         // then, the other way around
         adjacencyList.computeIfAbsent(a, k -> new ArrayList<>()).add(b);
@@ -26,11 +57,27 @@ public class Graph {
     }
 
     public void removeConnection(User a, User b) {
+        boolean eitherUserDoesntExist = (!adjacencyList.containsKey(a) ||
+            !adjacencyList.containsKey(b));
+        if (eitherUserDoesntExist) {
+            throw new IllegalArgumentException();
+        }
+
+        boolean connectionExists = (adjacencyList.get(a).contains(b) ||
+            adjacencyList.get(b).contains(a));
+        if (!connectionExists) {
+            throw new IllegalArgumentException();
+        }
+
         adjacencyList.computeIfAbsent(a, k -> new ArrayList<>()).remove(b);
         adjacencyList.computeIfAbsent(b, k -> new ArrayList<>()).remove(a);
     }
 
     public List<User> getConnections(User user) {
+        if (!adjacencyList.containsKey(user)) {
+            throw new IllegalArgumentException();
+        }
+
         return adjacencyList.get(user);
     }
 
@@ -39,6 +86,10 @@ public class Graph {
     }
 
     public boolean hasConnection(User a, User b) {
+        if (!adjacencyList.containsKey(a) || !adjacencyList.containsKey(b)) {
+            return false;
+        }
+
         return (
             adjacencyList.get(a).contains(b) || adjacencyList.get(b).contains(a)
         );
