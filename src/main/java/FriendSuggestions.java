@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class FriendSuggestions {
@@ -42,12 +43,15 @@ public class FriendSuggestions {
             throw new IllegalArgumentException();
         }
 
-        List<User> aConnections = graph.getConnections(a);
-        List<User> bConnections = graph.getConnections(b);
+        HashSet<User> aSet = new HashSet<>(graph.getConnections(a));
 
-        List<User> intersection = new ArrayList<>(aConnections);
-        intersection.retainAll(bConnections);
+        int count = 0;
+        for (User u : graph.getConnections(b)) {
+            if (aSet.contains(u)) {
+                count++;
+            }
+        }
 
-        return intersection.size();
+        return count;
     }
 }
