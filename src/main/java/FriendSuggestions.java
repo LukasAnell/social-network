@@ -38,8 +38,16 @@ public class FriendSuggestions {
     }
 
     public static int mutualFriendCount(Graph graph, User a, User b) {
-        //
+        if (!graph.hasUser(a) || !graph.hasUser(b)) {
+            throw new IllegalArgumentException();
+        }
 
-        return 0;
+        List<User> aConnections = graph.getConnections(a);
+        List<User> bConnections = graph.getConnections(b);
+
+        List<User> intersection = new ArrayList<>(aConnections);
+        intersection.retainAll(bConnections);
+
+        return intersection.size();
     }
 }
