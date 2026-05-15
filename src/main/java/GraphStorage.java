@@ -91,9 +91,6 @@ public class GraphStorage {
                 graph.addUser(currentUser);
             }
 
-            // get list of unique users in graph to check against ids read from line
-            List<User> uniqueUsers = graph.getUsers();
-
             // loop through connections until EOF
             while ((line = reader.readLine()) != null) {
                 String[] sep = line.strip().split(",");
@@ -102,13 +99,17 @@ public class GraphStorage {
 
                 // loop through unique users and find the ones that have the same id as in sep
                 // then add a connection going both ways
-                for (User u : uniqueUsers) {
+                for (User u : graph.getUsers()) {
                     if (
                         (u.getId() == Integer.parseInt(sep[0])) ||
                         (u.getId() == Integer.parseInt(sep[1]))
                     ) {
                         matchedUsers.add(u);
                     }
+                }
+
+                if (matchedUsers.size() < 2) {
+                    throw new IOException();
                 }
 
                 // add connection
